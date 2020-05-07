@@ -3,6 +3,9 @@ title: "Predicting Type of Exercise Using Data From Wearable Devices"
 author: "Warren"
 date: "07/05/2020"
 output: html_document
+params: 
+    new_title: "index"
+title: "`r params$index`"
 ---
 
 ```{r setup, include=FALSE}
