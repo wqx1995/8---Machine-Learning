@@ -1,0 +1,95 @@
+---
+title: "Predicting Type of Exercise Using Data From Wearable Devices"
+author: "Warren"
+date: "07/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
+
+## Preprocessing
+#### Downloading Training and Test Datasets
+```{r}
+fileURL1<- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+fileURL2<- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+download.file(fileURL1, destfile="./train.csv", method="curl")
+download.file(fileURL2, destfile="./test.csv", method="curl")
+
+dateDownloaded<-date()
+```
+
+#### Reading and Cleaning Training Data
+```{r}
+train<-read.csv("train.csv", na.strings=c("NA","","#DIV/0!"))
+train<-train[,colSums(is.na(train)) == 0]
+```
+
+#### Read and cleaning Testing Data into R
+```{r}
+test<-read.csv("test.csv", na.strings=c("NA","","#DIV/0!"))
+test<-test[,colSums(is.na(test)) == 0]
+```
+
+#### Explore
+
+```{r results='hide'}
+str(train)
+str(test)
+```
+
+#### Loading packages
+```{r}
+library(caret)
+library(randomForest)
+library(e1071)
+library(dplyr)
+```
+
+#### Set seed
+```{r}
+set.seed(123456)
+```
+
+## Remove variables that do not predict type of exercise
+```{r}
+train<-train[,-c(1:7)]
+test<-test[,-c(1:7)]
+```
+
+## Building Prediction Algorithm and Evaluation
+#### Partition Data
+```{r}
+inTrain     <- createDataPartition(train$classe, p = 0.6, list = FALSE)
+training  <- train[inTrain,]
+testing    <- train[-inTrain,]
+```
+
+#### Making random forest
+```{r cache=TRUE}
+modFit<- randomForest(classe~., data=training, prox=TRUE)
+modFit
+```
+
+#### Cross validation
+```{r, results="hide", message=FALSE}
+library(rfUtilities)
+rf.crossValidation(modFit, training[,1:52], p=0.6, n=4)
+```
+
+## Predicting Exercise Type Using Test Data Subsetted from Training Data
+```{r}
+predTest<-predict(modFit, newdata=testing)
+```
+
+## Evaluating model
+```{r}
+confusionMatrix(predTest, testing$classe)
+```
+
+## Using Model for Quiz
+```{r}
+print(predict(modFit, newdata=test))
+```

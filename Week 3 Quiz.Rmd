@@ -1,0 +1,83 @@
+---
+title: "Week 3 Quiz"
+author: "Warren"
+date: "05/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages
+```{r message = FALSE}
+library(AppliedPredictiveModeling)
+library(caret)
+library(ElemStatLearn)
+library(pgmm)
+library(rpart)
+library(rattle)
+```
+
+## Q1
+```{r}
+data(segmentationOriginal)
+inTrain<-createDataPartition((y=segmentationOriginal$Case), p=0.75, list=FALSE)
+
+training<- segmentationOriginal[inTrain,]
+testing<- segmentationOriginal[-inTrain,]
+
+set.seed(125)
+
+modFit<-train(Class~., method="rpart", data=training)
+
+fancyRpartPlot(modFit$finalModel)
+
+training_data2 <- subset(training, select = c("Class", "TotalIntenCh2", "FiberWidthCh1"))
+rpart_fit2 <- train(Class ~ ., data = training_data2, method = "rpart")
+print(rpart_fit2$finalModel)
+
+test_cases <- training_data2[0,]
+test_cases[1, c("TotalIntenCh2", "FiberWidthCh1")] = c(23000, 10)
+test_cases[2, c("TotalIntenCh2", "FiberWidthCh1")] = c(50000, 10)
+test_cases[3, c("TotalIntenCh2", "FiberWidthCh1")] = c(57000, 8)
+test_cases[4, c("TotalIntenCh2", "FiberWidthCh1")] = c(NA, 8)
+
+predict(rpart_fit2, newdata = test_cases, type = "prob", na.action = na.omit)
+
+```
+
+## Q3
+```{r}
+data(olive)
+olive = olive[,-1]
+
+modFit <- train(Area ~ ., method = "rpart", data = olive)
+
+newdata = as.data.frame(t(colMeans(olive)))
+
+predict(modFit, newdata = newdata)
+
+```
+
+## Q4
+```{r}
+library(ElemStatLearn)
+data(SAheart)
+set.seed(8484)
+train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+trainSA = SAheart[train,]
+testSA = SAheart[-train,]
+
+set.seed(13234)
+
+model<- glm(chd~age+alcohol+obesity+tobacco+typea+ldl, data=trainSA, family="binomial")
+
+prediction <- predict(model, testSA)
+head(prediction)
+
+missClass(trainSA$chd, predict(model, trainSA))
+
+missClass(testSA$chd, prediction)
+
+```
