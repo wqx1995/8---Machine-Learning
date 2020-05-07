@@ -1,13 +1,8 @@
 base
-methods
-datasets
-utils
-grDevices
-graphics
-stats
 lattice
 ggplot2
 caret
 randomForest
 e1071
 dplyr
+rfUtilities

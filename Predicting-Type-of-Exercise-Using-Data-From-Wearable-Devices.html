@@ -445,7 +445,28 @@ modFit</code></pre>
 <div id="cross-validation" class="section level4">
 <h4>Cross validation</h4>
 <pre class="r"><code>library(rfUtilities)
-rf.crossValidation(modFit, training[,1:52], p=0.6, n=4)</code></pre>
+rf.crossValidation(modFit, training[,1:52], p=0.6, n=4, ntree=500)</code></pre>
+<pre><code>## running: classification cross-validation with 4 iterations</code></pre>
+<pre><code>## Classification accuracy for cross-validation 
+##  
+##                       A     B    C     D    E
+## users.accuracy     99.4 99.25 98.6 98.30 99.4
+## producers.accuracy 99.8 98.20 98.4 99.35 99.8
+##  
+## Cross-validation Kappa = 0.99025 
+## Cross-validation OOB Error = 0.008395252 
+## Cross-validation error variance = 3.764408e-06 
+##  
+##  
+## Classification accuracy for model 
+##  
+##                       A     B     C     D     E
+## users.accuracy     99.9 98.75 98.90 98.55 99.60
+## producers.accuracy 99.5 99.05 98.05 99.50 99.85
+##  
+## Model Kappa = 0.99025 
+## Model OOB Error = 0.008395252 
+## Model error variance = 2.48312e-07</code></pre>
 </div>
 </div>
 <div id="predicting-exercise-type-using-test-data-subsetted-from-training-data" class="section level2">
@@ -487,6 +508,7 @@ rf.crossValidation(modFit, training[,1:52], p=0.6, n=4)</code></pre>
 ## Detection Rate         0.2843   0.1922   0.1724   0.1621   0.1826
 ## Detection Prevalence   0.2856   0.1936   0.1740   0.1639   0.1829
 ## Balanced Accuracy      0.9989   0.9958   0.9936   0.9935   0.9967</code></pre>
+<p>The out of sample error rate is 0.0062 04 0.62%</p>
 </div>
 <div id="using-model-for-quiz" class="section level2">
 <h2>Using Model for Quiz</h2>

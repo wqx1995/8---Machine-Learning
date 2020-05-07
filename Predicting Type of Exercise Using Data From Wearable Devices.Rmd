@@ -74,10 +74,11 @@ modFit
 ```
 
 #### Cross validation
-```{r, results="hide", message=FALSE}
+```{r message=FALSE, cache=TRUE}
 library(rfUtilities)
-rf.crossValidation(modFit, training[,1:52], p=0.6, n=4)
+rf.crossValidation(modFit, training[,1:52], p=0.6, n=4, ntree=500)
 ```
+
 
 ## Predicting Exercise Type Using Test Data Subsetted from Training Data
 ```{r}
@@ -88,6 +89,8 @@ predTest<-predict(modFit, newdata=testing)
 ```{r}
 confusionMatrix(predTest, testing$classe)
 ```
+
+The out of sample error rate is 0.0062 04 0.62%
 
 ## Using Model for Quiz
 ```{r}
